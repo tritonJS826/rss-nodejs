@@ -54,7 +54,7 @@ var encodeDecode = function () { return __awaiter(void 0, void 0, void 0, functi
             case 0:
                 cipher
                     .version("0.0.1")
-                    .description("An application for pizzas ordering")
+                    .description("An application for decode/encode text")
                     .option("-a, --Action <decode|encode>", 'action string: "decode" | "encode"')
                     .option("-s, --Shift <number>", "shift number: from -26 to 26")
                     .option("-i, --input <string>", "path to input file")

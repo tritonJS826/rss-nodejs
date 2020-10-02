@@ -10,7 +10,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "run": " npx tsc && node ./build -a encode -s 0 -i ./build/test.txt -o ./build/test2.txt"
+    "run": "npx tsc && node ./build",
+    "build": "npx tsc" 
   },
   "keywords": [
     "cipher"

@@ -13,7 +13,7 @@ const cipher = new Command();
 const encodeDecode = async () => {
   cipher
     .version("0.0.1")
-    .description("An application for pizzas ordering")
+    .description("An application for decode/encode text")
     .option(
       "-a, --Action <decode|encode>",
       'action string: "decode" | "encode"'
