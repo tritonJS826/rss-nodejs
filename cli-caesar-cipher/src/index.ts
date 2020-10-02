@@ -1,89 +1,103 @@
-const { Command } = require('commander'); // (normal include)
+const { Command } = require("commander"); // (normal include)
+const inquirer = require("inquirer");
+const fs = require("fs");
+
+import isActionCorrect from './helpers/isActionCorrect';
+import isShiftCorrect from './helpers/isShiftCorrect';
+import isPathCorrect from './helpers/isPathCorrect';
+
+import { EncodeStream, DecodeStream } from "./caesar-cipher";
+
 const cipher = new Command();
 
-
-const encodeDecode = (
-  // action: "encode" | "decode" = "encode",
-  // shift: number = 0,
-  // input: string = "",
-  // output: string = "",
-) => {
+const encodeDecode = async () => {
   cipher
-    .version('0.0.1')
-    .description('An application for pizzas ordering')
-    .option('-a, --Action <decode|encode>', 'action string: "decode" | "encode"')
-    .option('-s, --Shift <number>', 'shift number: from -26 to 26')
-    .option('-i, --input <string>', 'path to input file')
-    .option('-o, --output <string>', 'path to output file');
+    .version("0.0.1")
+    .description("An application for pizzas ordering")
+    .option(
+      "-a, --Action <decode|encode>",
+      'action string: "decode" | "encode"'
+    )
+    .option("-s, --Shift <number>", "shift number: from -26 to 26")
+    .option("-i, --input <string>", "path to input file")
+    .option("-o, --output <string>", "path to output file");
 
   cipher.parse(process.argv);
 
-  // console.log('u start a the program with parameters:');
-  // if (cipher.Action) console.log('  - Action');
-  // if (cipher.Shift) console.log('  - Shift');
+  // start program
 
-  const isActionCorrect = () => {
-    return (cipher.Action === 'decode' || cipher.Action === 'encode');
-  };
+  while (!isActionCorrect(cipher.Action)) {
+    console.error("\nError: Action incorrect");
+    const questions = [
+      {
+        name: "action",
+        type: "list",
+        choices: ["encode", "decode"],
+        message: "Please, select what do you want?"
+      }
+    ];
 
-  const isShiftCorrect = () => {
-    const isNumber = typeof cipher.Shift === 'number';
-    const isBiggerThanMinus27 = cipher.Shift > -27;
-    const isLessThanMinus27 = cipher.Shift < 27;
-
-    return (isNumber && isLessThanMinus27 || isBiggerThanMinus27)
-  };
-
-  const isInputCorrect = () => {
-    return true;
-  }; // !!!!!!!!!!!!
-  const isOutputCorrect = () => {
-    return true;
-  }; // !!!!!!!!!!!!
-
-  const readNewInput = () => {}; // !!!!!!!!!
-  const readNewOutput = () => {}; // !!!!!!!!!
-
-  const checkInput = () => {
-    if (!isInputCorrect()) {
-      console.error("incorrect input, write new input file path");
-      readNewInput();
-      checkInput();
-    }
-  }; // !!!!!!!!!
-
-  const checkOutput = () => {
-    if (!isOutputCorrect()) {
-      console.error("incorrect output path, write new output file path");
-      readNewOutput();
-      checkOutput();
-    }
-  }; // !!!!!!!!!
-
-  const cipherStart = (): void => {
-    //    pipeline(
-    //      input_stream, // input file stream or stdin stream
-    //      transform_stream, // standard Transform stream or https://github.com/rvagg/through2
-    //      output_stream // output file stream or stdout stream
-    // )
-    //.then(/* success and error callbacks */)
-  }; // !!!!!!!!!
- // start program
-  if (!isActionCorrect()) {
-    console.error("Error: Action incorrect");
-    process.exit(1);
-  }
-  if (!isShiftCorrect()) {
-    console.error("Error: Shift incorrect");
-    process.exit(1);
+    const answer = await inquirer.prompt(questions);
+    cipher.Action = answer.action;
   }
 
-  checkInput();
-  checkOutput();
+  while (!isShiftCorrect(cipher.Shift)) {
+    console.error("\nError: Shift incorrect");
 
-  cipherStart();
+    const questions = [
+      {
+        name: "shift",
+        type: "number",
+        message: "What shift do u want (from -26 to 26)?"
+      }
+    ];
+
+    const answer = await inquirer.prompt(questions);
+    cipher.Shift = answer.shift;
+  }
+
+  while (!(await isPathCorrect(cipher.input))) {
+    console.error("\nError: path to input file is not exist or acess denied");
+
+    const questions = [
+      {
+        name: "input",
+        type: "input",
+        message: "Print path to input file?"
+      }
+    ];
+
+    const answer = await inquirer.prompt(questions);
+    cipher.input = answer.input;
+  }
+
+  while (!(await isPathCorrect(cipher.output))) {
+    console.error("\nError: path to output file is not exist or acess denied");
+
+    const questions = [
+      {
+        name: "output",
+        type: "output",
+        message: "Print path to output file, please"
+      }
+    ];
+
+    const answer = await inquirer.prompt(questions);
+    cipher.output = answer.output;
+  }
+
+  const writeableStream = fs.createWriteStream(cipher.output);
+  const readableStream = fs.createReadStream(cipher.input, "utf8");
+
+  if (cipher.Action === "encode") {
+    const encodeStream = new EncodeStream({}, cipher.Shift);
+    readableStream.pipe(encodeStream).pipe(writeableStream);
+  }
+
+  if (cipher.Action === "decode") {
+    const decodeStream = new DecodeStream({}, cipher.Shift);
+    readableStream.pipe(decodeStream).pipe(writeableStream);
+  }
 };
 
 encodeDecode();
-
-console.log("AAA");
