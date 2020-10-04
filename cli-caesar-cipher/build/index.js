@@ -48,9 +48,9 @@ var isPathCorrect_1 = __importDefault(require("./helpers/isPathCorrect"));
 var caesar_cipher_1 = require("./caesar-cipher");
 var cipher = new Command();
 var encodeDecode = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var questions, answer, questions, answer, questions, answer, questions, answer, writeableStream, readableStream, encodeStream, decodeStream;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a, _b, writeableStream, readableStream, encodeStream, decodeStream;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
                 cipher
                     .version("0.0.1")
@@ -60,73 +60,39 @@ var encodeDecode = function () { return __awaiter(void 0, void 0, void 0, functi
                     .option("-i, --input <string>", "path to input file")
                     .option("-o, --output <string>", "path to output file");
                 cipher.parse(process.argv);
-                _a.label = 1;
+                // start program
+                if (!isActionCorrect_1.default(cipher.Action)) {
+                    process.stderr.write("\nError: Action incorrect, please input correct parameter -a\n");
+                    process.exit(1);
+                }
+                if (!isShiftCorrect_1.default(cipher.Shift)) {
+                    process.stderr.write("\nError: Shift incorrect, please input correct parameter -s\n");
+                    process.exit(1);
+                }
+                _a = cipher.input;
+                if (!_a) return [3 /*break*/, 2];
+                return [4 /*yield*/, isPathCorrect_1.default(cipher.input)];
             case 1:
-                if (!!isActionCorrect_1.default(cipher.Action)) return [3 /*break*/, 3];
-                console.error("\nError: Action incorrect");
-                questions = [
-                    {
-                        name: "action",
-                        type: "list",
-                        choices: ["encode", "decode"],
-                        message: "Please, select what do you want?"
-                    }
-                ];
-                return [4 /*yield*/, inquirer.prompt(questions)];
+                _a = !(_c.sent());
+                _c.label = 2;
             case 2:
-                answer = _a.sent();
-                cipher.Action = answer.action;
-                return [3 /*break*/, 1];
+                if (_a) {
+                    process.stderr.write("\nError: Input path incorrect, please input path parameter correct\n");
+                    process.exit(1);
+                }
+                _b = cipher.output;
+                if (!_b) return [3 /*break*/, 4];
+                return [4 /*yield*/, isPathCorrect_1.default(cipher.output)];
             case 3:
-                if (!!isShiftCorrect_1.default(cipher.Shift)) return [3 /*break*/, 5];
-                console.error("\nError: Shift incorrect");
-                questions = [
-                    {
-                        name: "shift",
-                        type: "number",
-                        message: "What shift do u want (from -26 to 26)?"
-                    }
-                ];
-                return [4 /*yield*/, inquirer.prompt(questions)];
+                _b = !(_c.sent());
+                _c.label = 4;
             case 4:
-                answer = _a.sent();
-                cipher.Shift = answer.shift;
-                return [3 /*break*/, 3];
-            case 5: return [4 /*yield*/, isPathCorrect_1.default(cipher.input)];
-            case 6:
-                if (!!(_a.sent())) return [3 /*break*/, 8];
-                console.error("\nError: path to input file is not exist or acess denied");
-                questions = [
-                    {
-                        name: "input",
-                        type: "input",
-                        message: "Print path to input file?"
-                    }
-                ];
-                return [4 /*yield*/, inquirer.prompt(questions)];
-            case 7:
-                answer = _a.sent();
-                cipher.input = answer.input;
-                return [3 /*break*/, 5];
-            case 8: return [4 /*yield*/, isPathCorrect_1.default(cipher.output)];
-            case 9:
-                if (!!(_a.sent())) return [3 /*break*/, 11];
-                console.error("\nError: path to output file is not exist or acess denied");
-                questions = [
-                    {
-                        name: "output",
-                        type: "output",
-                        message: "Print path to output file, please"
-                    }
-                ];
-                return [4 /*yield*/, inquirer.prompt(questions)];
-            case 10:
-                answer = _a.sent();
-                cipher.output = answer.output;
-                return [3 /*break*/, 8];
-            case 11:
-                writeableStream = fs.createWriteStream(cipher.output);
-                readableStream = fs.createReadStream(cipher.input, "utf8");
+                if (_b) {
+                    process.stderr.write("\nError: Output path incorrect, please input path parameter correct\n");
+                    process.exit(1);
+                }
+                writeableStream = cipher.output ? fs.createWriteStream(cipher.output, { flags: 'a+' }) : process.stdin;
+                readableStream = cipher.input ? fs.createReadStream(cipher.input, "utf8") : process.stdout;
                 if (cipher.Action === "encode") {
                     encodeStream = new caesar_cipher_1.EncodeStream({}, cipher.Shift);
                     readableStream.pipe(encodeStream).pipe(writeableStream);

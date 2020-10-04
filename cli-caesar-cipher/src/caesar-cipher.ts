@@ -71,22 +71,22 @@ export class EncodeStream extends Transform {
     this.shift = shift;
 
     this.on("close", () => {
-      console.log("\n------ Transform on close");
+      console.log("\n------ Transform on close ------");
     })
       .on("drain", () => {
-        console.log("\n------ Encode on drain");
+        console.log("\n------ Encode on drain ------");
       })
       .on("error", (err: Error) => {
-        console.log("\n------ Encode on error", err);
+        console.log("\n------ Encode on error ------", err);
       })
       .on("finish", () => {
-        console.log("\n------ Encode on finish");
+        console.log("\n------ Encode on finish ------");
       })
       .on("end", () => {
-        console.log("\n------ Encode on end");
+        console.log("\n------ Encode on end ------");
       })
       .on("pipe", () => {
-        console.log("\n------ Encode on pipe");
+        console.log("\n------ Encode on pipe ------");
       });
   }
 

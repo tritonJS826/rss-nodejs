@@ -23,71 +23,31 @@ const encodeDecode = async () => {
     .option("-o, --output <string>", "path to output file");
 
   cipher.parse(process.argv);
-
+  
   // start program
 
-  while (!isActionCorrect(cipher.Action)) {
-    console.error("\nError: Action incorrect");
-    const questions = [
-      {
-        name: "action",
-        type: "list",
-        choices: ["encode", "decode"],
-        message: "Please, select what do you want?"
-      }
-    ];
-
-    const answer = await inquirer.prompt(questions);
-    cipher.Action = answer.action;
+  if (!isActionCorrect(cipher.Action)) {
+    process.stderr.write("\nError: Action incorrect, please input correct parameter -a\n");
+    process.exit(1);
   }
 
-  while (!isShiftCorrect(cipher.Shift)) {
-    console.error("\nError: Shift incorrect");
-
-    const questions = [
-      {
-        name: "shift",
-        type: "number",
-        message: "What shift do u want (from -26 to 26)?"
-      }
-    ];
-
-    const answer = await inquirer.prompt(questions);
-    cipher.Shift = answer.shift;
+  if (!isShiftCorrect(cipher.Shift)) {
+    process.stderr.write("\nError: Shift incorrect, please input correct parameter -s\n");
+    process.exit(1);
   }
 
-  while (!(await isPathCorrect(cipher.input))) {
-    console.error("\nError: path to input file is not exist or acess denied");
-
-    const questions = [
-      {
-        name: "input",
-        type: "input",
-        message: "Print path to input file?"
-      }
-    ];
-
-    const answer = await inquirer.prompt(questions);
-    cipher.input = answer.input;
+  if (cipher.input && !(await isPathCorrect(cipher.input))) {
+    process.stderr.write("\nError: Input path incorrect, please input path parameter correct\n");
+    process.exit(1);
   }
 
-  while (!(await isPathCorrect(cipher.output))) {
-    console.error("\nError: path to output file is not exist or acess denied");
-
-    const questions = [
-      {
-        name: "output",
-        type: "output",
-        message: "Print path to output file, please"
-      }
-    ];
-
-    const answer = await inquirer.prompt(questions);
-    cipher.output = answer.output;
+  if (cipher.output && !(await isPathCorrect(cipher.output))) {
+    process.stderr.write("\nError: Output path incorrect, please input path parameter correct\n");
+    process.exit(1);
   }
 
-  const writeableStream = fs.createWriteStream(cipher.output);
-  const readableStream = fs.createReadStream(cipher.input, "utf8");
+  const writeableStream = cipher.output ? fs.createWriteStream(cipher.output, { flags: 'a+' } ) : process.stdin;
+  const readableStream = cipher.input ? fs.createReadStream(cipher.input, "utf8") : process.stdout;
 
   if (cipher.Action === "encode") {
     const encodeStream = new EncodeStream({}, cipher.Shift);
