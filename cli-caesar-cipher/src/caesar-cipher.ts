@@ -8,7 +8,7 @@ const alphabet = [
   "A",
   "a",
   "B",
-  "b", //3
+  "b", 
   "C",
   "c",
   "D",
@@ -54,9 +54,9 @@ const alphabet = [
   "X",
   "x",
   "Y",
-  "y", //49
-  "Z", //50
-  "z", //51
+  "y", 
+  "Z",
+  "z",
 ];
 
 export class EncodeStream extends Transform {
@@ -98,7 +98,7 @@ export class EncodeStream extends Transform {
         const letterIndex = alphabet.indexOf(letter);
         if (letterIndex === -1) return letter;
 
-        const newLetterIndex = (letterIndex + this.shift * 2) % 52;
+        const newLetterIndex = (letterIndex + this.shift * 2 + 52) % 52;
         const encodedLetter = alphabet[newLetterIndex];
 
         return encodedLetter

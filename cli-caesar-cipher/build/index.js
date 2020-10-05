@@ -91,8 +91,8 @@ var encodeDecode = function () { return __awaiter(void 0, void 0, void 0, functi
                     process.stderr.write("\nError: Output path incorrect, please input path parameter correct\n");
                     process.exit(1);
                 }
-                writeableStream = cipher.output ? fs.createWriteStream(cipher.output, { flags: 'a+' }) : process.stdin;
-                readableStream = cipher.input ? fs.createReadStream(cipher.input, "utf8") : process.stdout;
+                writeableStream = cipher.output ? fs.createWriteStream(cipher.output, { flags: 'a+' }) : process.stdout;
+                readableStream = cipher.input ? fs.createReadStream(cipher.input, "utf8") : process.stdin;
                 if (cipher.Action === "encode") {
                     encodeStream = new caesar_cipher_1.EncodeStream({}, cipher.Shift);
                     readableStream.pipe(encodeStream).pipe(writeableStream);

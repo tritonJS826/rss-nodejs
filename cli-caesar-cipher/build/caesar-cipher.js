@@ -111,7 +111,7 @@ var EncodeStream = /** @class */ (function (_super) {
             var letterIndex = alphabet.indexOf(letter);
             if (letterIndex === -1)
                 return letter;
-            var newLetterIndex = (letterIndex + _this.shift * 2) % 52;
+            var newLetterIndex = (letterIndex + _this.shift * 2 + 52) % 52;
             var encodedLetter = alphabet[newLetterIndex];
             return encodedLetter;
         }).join('');

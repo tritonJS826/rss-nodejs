@@ -3,7 +3,7 @@
 <hr>
 To start cipher:</br>
 1. Download this repo</br>
-2. <i>$ npm </br> </i>
+2. <i>$ npm install</br> </i>
 3. <i>$ npm run encode </i><b> OR </b><i> $ npm run decode</i></br>
 after that the program will start in your console</br>
 <b>OR</b></br>

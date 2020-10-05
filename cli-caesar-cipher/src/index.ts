@@ -46,8 +46,8 @@ const encodeDecode = async () => {
     process.exit(1);
   }
 
-  const writeableStream = cipher.output ? fs.createWriteStream(cipher.output, { flags: 'a+' } ) : process.stdin;
-  const readableStream = cipher.input ? fs.createReadStream(cipher.input, "utf8") : process.stdout;
+  const writeableStream = cipher.output ? fs.createWriteStream(cipher.output, { flags: 'a+' } ) : process.stdout;
+  const readableStream = cipher.input ? fs.createReadStream(cipher.input, "utf8") : process.stdin;
 
   if (cipher.Action === "encode") {
     const encodeStream = new EncodeStream({}, cipher.Shift);
