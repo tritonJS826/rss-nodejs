@@ -6,6 +6,7 @@ const { v4 } = require('uuid');
 router.route('/').get(async (req, res) => {
   try {
     const boards = await boardsService.getAllBoards();
+    console.log('getAllBoard', boards);
     res.status(200).json(boards.map(Board.toResponse));
   } catch (e) {
     console.log('---------getAllBoards-Error-----------');
@@ -15,12 +16,12 @@ router.route('/').get(async (req, res) => {
 router.route('/:boardId').get(async (req, res) => {
   try {
     const boardId = req.params.boardId;
-    console.log('params', req.params);
+    console.log('getBoardBYID', boardId);
     const board = await boardsService.getBoardById(boardId);
     res.status(200).json(Board.toResponse(board));
   } catch (e) {
     console.log('-----------getBoardById-Error--------------------');
-    // console.log(`-----------${e}--------------------`);
+    console.log(e);
     console.log('-----------getBoardById-Error--------------------');
   }
 });
@@ -28,34 +29,42 @@ router.route('/:boardId').get(async (req, res) => {
 router.route('/').post(async (req, res) => {
   try {
     const { title, columns } = req.body;
+    console.log('createBoard', title, columns);
     const id = v4();
-    console.log(
-      `!!!!!!!!!!BoardCreated!!!!!!!!!!${id}!!!!${title}!!!!!!!!!!!!!!!!!!!!!!!!!!`
-    );
     await boardsService.createNewBoard({ id, title, columns });
-    return res.status(200).json('undefined');
+    res.status(200).json(Board.toResponse({ id, title, columns }));
   } catch (e) {
     console.log('---------createNewBoard-Error------------------');
   }
 });
 
 router.route('/:boardId').put(async (req, res) => {
-  const oldBoardId = req.params.boardId;
-  const { newTitle, newColumns } = req.body;
-
-  const response = await boardsService.updateBoard(oldBoardId, {
-    oldBoardId,
-    newTitle,
-    newColumns
-  });
-  res.status(200).json(response);
+  try {
+    const id = req.params.boardId;
+    const { title, columns } = req.body;
+    console.log('updateBoard', title, columns, id);
+    await boardsService.updateBoard({
+      id,
+      title,
+      columns
+    });
+    res.status(200).json(Board.toResponse({ id, title, columns }));
+  } catch (e) {
+    console.log('----------updateBoardById-Error---------------------');
+  }
 });
 
 router.route('/:boardId').delete(async (req, res) => {
-  const boardId = req.params.boardId;
-
-  const response = await boardsService.deleteBoardById(boardId);
-  res.status(200).json(response);
+  try {
+    const boardId = req.params.boardId;
+    console.log('delBoard', boardId);
+    await boardsService.deleteBoardById(boardId);
+    res.sendStatus(204);
+  } catch (e) {
+    console.log('----------deleteBoard-Error---------------');
+    console.log(e);
+    console.log('----------deleteBoard-Error---------------');
+  }
 });
 
 module.exports = router;

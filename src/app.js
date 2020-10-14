@@ -26,6 +26,6 @@ app.use('/users', userRouter);
 
 app.use('/boards', boardsRouter);
 
-app.use('/tasks', tasksRouter);
+app.use('/boards', tasksRouter);
 
 module.exports = app;

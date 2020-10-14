@@ -1,10 +1,15 @@
 const boards = require('./boards');
 const users = require('./users');
+const tasks = require('./tasks');
 
 class Repo {
   constructor() {
     this.boards = boards;
     this.users = users;
+    this.tasks = tasks;
+  }
+  getTasks() {
+    return this.tasks;
   }
 
   getBoards() {
@@ -13,6 +18,10 @@ class Repo {
 
   getUsers() {
     return this.users;
+  }
+
+  setTasks() {
+    this.tasks = tasks;
   }
 
   setBoards(newBoards) {

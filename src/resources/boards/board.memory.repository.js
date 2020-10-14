@@ -1,51 +1,39 @@
 const repo = require('../../constants/repository/repo');
-const { v4 } = require('uuid');
 
 const getAllBoards = async () => {
-  const allBoards = repo.getBoards().boards.map(({ id, title, columns }) => {
-    return { id, title, columns };
-  });
+  const allBoards = repo.getBoards().boards;
   return allBoards;
 };
 
 const getBoardById = async boardId => {
-  // console.log(
-  //   `~~~~~ID~~${boardId}~~from~~~~~${repo.getBoards().boards}~~~~~~~~~~~~~~~~~~`
-  // );
-  const board = repo.getBoards().boards.filter(el => el.id === boardId);
-  // eslint-disable-next-line
-  // for (const key in board[0]) {
-  //   console.log(`~~~~~~~~~~~${key}~~~~~~~~~~~~~~~~~~~`);
-  // }
-  return board[0];
+  const rawBoard = repo.getBoards().boards.filter(el => el.id === boardId);
+  const board = rawBoard[0];
+  return board;
 };
 
-const createNewBoard = async ({ title, columns }) => {
+const createNewBoard = async ({ id, title, columns }) => {
   const oldBoards = repo.getBoards().boards;
-  const id = v4();
   const allBoards = [...oldBoards, { id, title, columns }];
   repo.setBoards({ boards: allBoards });
-  return `board ${title} created`;
+  return { id, title, columns };
 };
 
-const updateBoard = async (oldBoardId, { newTitle, newColumns }) => {
+const updateBoard = async ({ id, title, columns }) => {
   const oldBoards = repo.getBoards().boards;
-  const oldBoardsWithouChangingBoard = oldBoards.filter(
-    el => el.id !== oldBoardId
-  );
+  const oldBoardsWithouChangingBoard = oldBoards.filter(el => el.id !== id);
+  if (!oldBoardsWithouChangingBoard) return;
   const updatedBoards = [
     ...oldBoardsWithouChangingBoard,
-    { oldBoardId, newTitle, newColumns }
+    { id, title, columns }
   ];
   repo.setBoards({ boards: updatedBoards });
-  return `board ${oldBoardId} updated`;
+  return { id, title, columns };
 };
 
 const deleteBoardById = async boardId => {
   const oldBoards = repo.getBoards().boards;
-  const boardsWithouChangingBoard = oldBoards.filter(el => el.id !== boardId);
-  repo.setBoards({ boards: boardsWithouChangingBoard });
-  return `board ${boardId} deleted`;
+  const boardsWithoutChangingBoard = oldBoards.filter(el => el.id !== boardId);
+  repo.setBoards({ boards: boardsWithoutChangingBoard });
 };
 
 module.exports = {

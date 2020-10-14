@@ -7,8 +7,8 @@ const getBoardById = boardId => boardsRepo.getBoardById(boardId);
 const createNewBoard = ({ id, title, columns }) =>
   boardsRepo.createNewBoard({ id, title, columns });
 
-const updateBoard = (oldBoardId, newBoard) => {
-  boardsRepo.updateBoard(oldBoardId, newBoard);
+const updateBoard = newBoard => {
+  boardsRepo.updateBoard(newBoard);
 };
 
 const deleteBoardById = boardId => {
